@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>InfraPlan Projects Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#FFFFFF; --bg2:#F8F9FA; --bg3:#F0F1F3;  /* Professional white theme */
+  --border:#E2E8F0; --acc:#2563EB;
+  --text:#111827; --text-dim:#6B7280;
+  --bar-h:56px; --sidebar-w:300px; --panel-w:360px;
+  /* Premium shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-xl: 0 10px 15px rgba(0,0,0,0.1);
+  --shadow-marker: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+body { font-family:'DM Sans',sans-serif; background:var(--bg); overflow:hidden; }
+
+/* TOP BAR */
+#topbar {
+  height:var(--bar-h);
+  background:linear-gradient(90deg, #FFFFFF 0%, #F8F9FA 50%, #FFFFFF 100%);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 14px; position:relative; z-index:1100;
+  box-shadow: var(--shadow-sm);
+}
+#topbar-title {
+  position:absolute; left:50%; transform:translateX(-50%);
+  color:var(--text); font-family:'Rajdhani',sans-serif;
+  font-size:20px; font-weight:700; letter-spacing:2.5px;
+  text-transform:uppercase; white-space:nowrap; pointer-events:none;
+}
+#topbar-left { display:flex; gap:8px; align-items:center; }
+#topbar-right { display:flex; gap:6px; align-items:center; }
+
+select, #resetBtn {
+  height:30px; border:1px solid var(--border); border-radius:5px;
+  background:var(--bg2); color:var(--text); font-size:14px;
+  padding:0 8px; cursor:pointer; outline:none;
+  font-family:'DM Sans',sans-serif; transition:border-color 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shadow-md); }
+#resetBtn { background:#1d4ed8; border-color:#3b82f6; color:#fff; font-weight:600; padding:0 14px; }
+#resetBtn:hover { background:var(--acc); box-shadow: var(--shadow-lg); }
+
+#viewToggle { display:flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; box-shadow: var(--shadow-sm); }
+.view-btn {
+  height:30px; padding:0 12px; background:var(--bg2); color:var(--text-dim);
+  border:none; cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif; font-weight:500;
+  display:flex; align-items:center; gap:5px; transition:all 0.15s;
+}
+.view-btn:first-child { border-right:1px solid var(--border); }
+.view-btn.active { background:var(--acc); color:#fff; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+.view-btn:hover:not(.active) { background:var(--bg3); color:var(--text); transform: scale(1.02); }
+
+#zoomResetBadge {
+  position:absolute; top:var(--bar-h); left:50%; transform:translateX(-50%);
+  background:#1d4ed8; color:#fff; font-size:12px;
+  padding:4px 16px; border-radius:0 0 6px 6px;
+  display:none; z-index:900; pointer-events:none;
+}
+
+/* LAYOUT */
+#container { display:flex; height:calc(100vh - var(--bar-h)); position:relative; }
+
+/* SIDEBAR */
+#sidebar {
+  width:var(--sidebar-w); background:var(--bg);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  flex-shrink:0; z-index:500; overflow:hidden;
+  box-shadow:4px 0 16px rgba(0,0,0,0.06);
+}
+#sidebar-header {
+  padding:12px 14px 10px;
+  font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:1px; color:var(--text-dim); text-transform:uppercase;
+  border-bottom:1px solid var(--border); flex-shrink:0;
+}
+
+/* Search */
+#searchBox { padding:10px 12px; border-bottom:1px solid var(--border); flex-shrink:0; position:relative; }
+#searchInput {
+  width:100%; height:36px; background:var(--bg2); border:1px solid var(--border);
+  border-radius:6px; color:var(--text); font-size:13px;
+  padding:0 30px 0 10px; outline:none; font-family:'DM Sans',sans-serif; transition:border-color 0.15s;
+}
+#searchInput::placeholder { color:var(--text-dim); }
+#searchInput:focus { border-color:var(--acc); }
+#searchClear { position:absolute; right:20px; top:50%; transform:translateY(-50%); color:var(--text-dim); cursor:pointer; font-size:14px; display:none; }
+#searchClear:hover { color:var(--text); }
+#searchCount { font-size:10px; color:var(--text-dim); margin-top:5px; padding:0 2px; min-height:14px; }
+
+#layerList { overflow-y:auto; flex:1; }
+
+/* layer row — two lines: main row + cluster toggle sub-row */
+.layer-item { border-bottom:1px solid var(--border); transition:background 0.15s; }
+.layer-item:hover { background:#0f1f3d22; }
+.layer-main-row {
+  display:flex; justify-content:space-between; align-items:center;
+  gap:8px; padding:10px 14px; cursor:pointer; user-select:none;
+}
+.layer-left { display:flex; align-items:center; gap:8px; flex:1; min-width:0; }
+.layer-name { font-size:14px; font-weight:600; color:var(--text); line-height:1.4; }
+.layer-item.unchecked .layer-name { color:var(--text-dim); }
+.layer-count { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:var(--acc); min-width:26px; text-align:right; }
+.layer-item.unchecked .layer-count { color:#1e3560; }
+
+/* cluster toggle sub-row */
+.layer-sub-row {
+  display:none; align-items:center; justify-content:flex-end; /* ← Cluster button toggle/switch use display:none or display:flex */
+  padding:0 14px 8px; gap:6px;
+}
+.cluster-label { font-size:10px; color:var(--text-dim); }
+/* small toggle switch */
+.toggle-switch { position:relative; width:30px; height:16px; cursor:pointer; }
+.toggle-switch input { display:none; }
+.toggle-track {
+  width:30px; height:16px; background:#1e3560; border-radius:99px;
+  transition:background 0.2s; display:block;
+}
+.toggle-switch input:checked + .toggle-track { background:var(--acc); }
+.toggle-thumb {
+  position:absolute; top:2px; left:2px;
+  width:12px; height:12px; border-radius:50%;
+  background:#fff; transition:left 0.2s;
+  pointer-events:none;
+}
+.toggle-switch input:checked ~ .toggle-thumb { left:16px; }
+
+.cb-box { width:14px; height:14px; border:2px solid #334155; border-radius:3px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.cb-box.checked { border-color:var(--layer-color,var(--acc)); background:var(--layer-color,var(--acc)); }
+.cb-box.checked::after { content:''; width:7px; height:4px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg) translateY(-1px); }
+.shape-swatch { width:28px; height:28px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+
+/* Stats bar */
+#stats-bar { background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); display:flex; align-items:stretch; flex-shrink:0; }
+.stat-box { flex:1; padding:12px 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; }
+.stat-label { font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); }
+.stat-value { font-family:'Rajdhani',sans-serif; font-size:24px; font-weight:700; color:var(--acc); line-height:1; }
+.stat-divider { width:1px; background:var(--border); margin:8px 0; }
+
+/* MAP */
+#map { flex:1; }
+
+/* LIST VIEW */
+#listView { flex:1; overflow:hidden; background:var(--bg); display:none; flex-direction:column; }
+#listView.active { display:flex; }
+#listToolbar {
+  padding:10px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0; background:var(--bg2); gap:10px;
+}
+#listToolbar .tl-left { display:flex; align-items:center; gap:8px; }
+#listCountLabel { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:var(--acc); }
+#listToolbar .tl-meta { font-size:11px; color:var(--text-dim); }
+.sort-tabs { display:flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; flex-shrink:0; }
+.sort-tab { height:28px; padding:0 11px; background:var(--bg); border:none; color:var(--text-dim); font-size:11px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; border-right:1px solid var(--border); white-space:nowrap; transition:all 0.15s; }
+.sort-tab:last-child { border-right:none; }
+.sort-tab.active { background:var(--acc); color:#fff; }
+.sort-tab:hover:not(.active) { background:var(--bg3); color:var(--text); }
+#listScroll { flex:1; overflow-y:auto; padding:12px 16px; }
+.list-group { margin-bottom:8px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.list-group-hdr { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; background:var(--bg2); user-select:none; transition:background 0.15s; font-weight:600; }
+.list-group-hdr:hover { background:var(--bg3); }
+.list-group-hdr-icon { width:28px; height:28px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.list-group-hdr-name { font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; flex:1; color:var(--text); }
+.list-group-hdr-count { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; color:var(--acc); margin-right:6px; }
+.list-group-hdr-arrow { color:var(--text-dim); font-size:16px; transition:transform 0.2s; }
+.list-group-hdr.open .list-group-hdr-arrow { transform:rotate(90deg); }
+.list-group-body { display:none; border-top:1px solid var(--border); }
+.list-group-body.open { display:block; }
+.list-card { display:flex; align-items:flex-start; gap:10px; padding:11px 14px; cursor:pointer; border-bottom:1px solid var(--border); transition:all 0.15s; box-shadow: var(--shadow-sm); }
+.list-card:last-child { border-bottom:none; }
+.list-card:hover { background:var(--bg3); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.list-card-num { font-family:'Rajdhani',sans-serif; font-size:12px; color:var(--text-dim); min-width:20px; padding-top:2px; }
+.list-card-body { flex:1; min-width:0; }
+.list-card-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; line-height:1.3; }
+.list-card-name mark { background:#3B82F644; color:var(--acc); border-radius:3px; padding:0 3px; font-weight:700; }
+.list-card-location { font-size:12px; color:var(--text-dim); margin-bottom:4px; font-weight:500; }
+.list-card-desc { font-size:12px; color:var(--text-dim); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.list-card-arrow { color:var(--text-dim); font-size:16px; padding-top:2px; transition:color 0.12s; }
+.list-card:hover .list-card-arrow { color:var(--acc); }
+#listEmpty { display:none; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; gap:12px; color:var(--text-dim); font-size:13px; text-align:center; }
+#listEmpty svg { opacity:0.25; }
+
+/* ── MARKER HOVER EFFECTS ── */
+.leaflet-marker-icon { transition:filter 0.2s; }
+.leaflet-marker-icon:hover { filter:drop-shadow(0 4px 8px rgba(0,0,0,0.3))!important; }
+
+/* DETAIL PANEL */
+#detailPanel {
+  position:absolute; top:0; right:0; width:var(--panel-w); height:100%;
+  background:var(--bg); border-left:1px solid var(--border);
+  z-index:800; display:flex; flex-direction:column;
+  transform:translateX(100%);
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:-8px 0 20px rgba(0,0,0,0.15), -2px 0 4px rgba(0,0,0,0.08);
+  border-radius:0;
+}
+#detailPanel.open { transform:translateX(0); }
+#panel-close { position:absolute; top:12px; right:14px; width:28px; height:28px; background:var(--bg3); border:1px solid var(--border); border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); font-size:16px; line-height:1; transition:background 0.15s; z-index:10; }
+#panel-close:hover { background:#1e3a5f; }
+#gallery { position:relative; width:100%; height:220px; background:#050d1a; flex-shrink:0; overflow:hidden; }
+#gallery-img { width:100%; height:100%; object-fit:cover; transition:opacity 0.3s ease; }
+#gallery-placeholder { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-dim); gap:8px; font-size:12px; }
+#gallery-placeholder svg { opacity:0.3; }
+.gallery-nav { position:absolute; top:50%; transform:translateY(-50%); width:32px; height:32px; background:rgba(0,0,0,0.6); border:1px solid #ffffff22; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; transition:background 0.15s; user-select:none; }
+.gallery-nav:hover { background:rgba(37,99,235,0.7); }
+#galleryPrev { left:10px; } #galleryNext { right:10px; }
+#galleryDots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px; }
+.gdot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); cursor:pointer; transition:background 0.2s; }
+.gdot.active { background:#fff; }
+#galleryCounter { position:absolute; top:10px; left:12px; background:rgba(0,0,0,0.6); color:#fff; font-size:11px; padding:2px 8px; border-radius:99px; }
+#panel-content { flex:1; overflow-y:auto; padding:16px; }
+#panel-tag { display:inline-block; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:700; margin-bottom:12px; letter-spacing:0.5px; text-transform:uppercase; }
+#panel-name { font-family:'Rajdhani',sans-serif; font-size:24px; font-weight:700; color:var(--text); line-height:1.2; margin-bottom:18px; }
+.panel-field { margin-bottom:14px; }
+.panel-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); margin-bottom:4px; }
+.panel-value { font-size:14px; color:var(--text); line-height:1.6; }
+
+.custom-cluster { display:flex; align-items:center; justify-content:center; border-radius:50%; font-family:'Rajdhani',sans-serif; font-weight:700; color:#fff; border:2px solid rgba(255,255,255,0.4); box-shadow:0 4px 12px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3); }
+
+/* ── PROJECT TYPE ICON STYLES ── */
+.project-icon { display:flex; align-items:center; justify-content:center; filter:var(--shadow-marker); }
+
+.marker-tooltip { background:rgba(10,22,40,0.88)!important; border:1px solid var(--border)!important; border-radius:4px!important; color:#e2e8f0!important; font-family:'DM Sans',sans-serif!important; font-size:11px!important; box-shadow:none!important; padding:2px 7px!important; white-space:nowrap!important; }
+.marker-tooltip::before { display:none!important; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div id="topbar-left">
+    <select id="countryFilter"><option value="All">All Countries</option></select>
+    <select id="stateFilter"><option value="All">All States</option></select>
+    <button id="resetBtn">↺ Reset</button>
+  </div>
+  <div id="topbar-title">InfraPlan — Project Locations: Our Presence</div>
+  <div id="topbar-right">
+    <div id="viewToggle">
+      <button class="view-btn active" id="btnMapView" onclick="setView('map')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        Map View
+      </button>
+      <button class="view-btn" id="btnListView" onclick="setView('list')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        List View
+      </button>
+    </div>
+  </div>
+</div>
+<div id="zoomResetBadge">⟲ Filters reset — zoomed out</div>
+
+<div id="container">
+  <div id="sidebar">
+    
+	    <div id="stats-bar">
+      <div class="stat-box"><div class="stat-label">Countries</div><div class="stat-value" id="statCountries">0</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-box"><div class="stat-label">States</div><div class="stat-value" id="statStates">0</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-box"><div class="stat-label">Projects</div><div class="stat-value" id="totalCount">0</div></div>
+    </div>
+    <div id="searchBox">
+      <input type="text" id="searchInput" placeholder="🔍  Search project, state, country…">
+      <span id="searchClear" onclick="clearSearch()">✕</span>
+      <div id="searchCount"></div>
+    </div>
+	<div id="sidebar-header">Project Types</div>
+    <div id="layerList"></div>
+	
+  </div>
+
+  <div id="map"></div>
+
+  <div id="listView">
+    <div id="listToolbar">
+      <div class="tl-left">
+        <span id="listCountLabel">0</span>
+        <span class="tl-meta">projects</span>
+      </div>
+      <div class="sort-tabs">
+        <button class="sort-tab active" data-sort="layer"   onclick="setSort('layer')">By Layer</button>
+        <button class="sort-tab"        data-sort="country" onclick="setSort('country')">By Country</button>
+        <button class="sort-tab"        data-sort="az"      onclick="setSort('az')">A – Z</button>
+      </div>
+    </div>
+    <div id="listScroll">
+      <div id="listEmpty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        No projects match your search or filters.
+      </div>
+    </div>
+  </div>
+
+  <div id="detailPanel">
+    <div id="panel-close" onclick="closePanel()">✕</div>
+    <div id="gallery">
+      <img id="gallery-img" src="" alt="" style="display:none">
+      <div id="gallery-placeholder">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>No photos available</span>
+      </div>
+      <div id="galleryCounter" style="display:none"></div>
+      <div class="gallery-nav" id="galleryPrev" onclick="galleryStep(-1)" style="display:none">&#8249;</div>
+      <div class="gallery-nav" id="galleryNext" onclick="galleryStep(1)"  style="display:none">&#8250;</div>
+      <div id="galleryDots"></div>
+    </div>
+    <div id="panel-content">
+      <div id="panel-tag"></div>
+      <div id="panel-name"></div>
+      <div class="panel-field"><div class="panel-label">Country</div><div class="panel-value" id="panel-country"></div></div>
+      <div class="panel-field"><div class="panel-label">State / Region</div><div class="panel-value" id="panel-state"></div></div>
+      <div class="panel-field"><div class="panel-label">Description</div><div class="panel-value" id="panel-desc"></div></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script>
+
+/* =====================================================================
+   Layer Congfiguration
+   ─────────────────────────────────────────────────────────────────────
+   cluster: true  → markers group into bubbles when close together
+   cluster: false → every marker always renders individually
+
+   Change  cluster:true  to  cluster:false  for any layer to disable
+   clustering for that layer only. All other layers are unaffected.
+
+   iconSize: controls base icon size in pixels at zoom level 4.
+   The icon automatically scales up as user zooms in.
+   ===================================================================== */
+const LAYERS = [
+  {
+    id:'arch', name:'Architectural 3D Mapping',
+    file:'data/Architectural_3D_Mapping.geojson',
+    color:'#f97316', shape:'circle',
+    type:'icon', icon:'icons/arch.png',
+    cluster: false,    // ← true = clustered | false = always individual
+    iconSize: 24,     // ← base icon size in px at zoom 4
+  },
+  {
+    id:'solar', name:'Solar Energy Projects',
+    file:'data/Solar_Energy_Projects.geojson',
+    color:'#eab308', shape:'star',
+    type:'icon', icon:'icons/solar.png',
+    cluster: false,
+    iconSize: 24,
+  },
+  {
+    id:'drain', name:'Underground Drainage Scheme',
+    file:'data/Underground_Drainage_Scheme.geojson',
+    color:'#964B00', shape:'square',
+    type:'icon', icon:'icons/drain.jpg',
+    cluster: true,
+    iconSize: 20,
+  },
+  {
+    id:'city', name:'City Development Plan & City Sanitation Plan',
+    file:'data/City_Development_Plan_and_City_Sanitation_Plan.geojson',
+    color:'#22c55e', shape:'hexagon',
+    type:'icon', icon:'icons/city.jpg',
+    cluster: true,
+    iconSize: 20,
+  },
+  {
+    id:'hydraulic', name:'Hydraulic Model Study',
+    file:'data/Hydraulic_Model_Study.geojson',
+    color:'#06b6d4', shape:'triangle',
+    type:'icon', icon:'icons/hydraulic.png',
+    cluster: false,   // ← HYDRAULIC: NO CLUSTERING — each project shown individually // use "true & false"
+    iconSize: 20,
+  },
+  {
+    id:'water', name:'Drinking Water Supply Works',
+    file:'data/Drinking_Water_Supply_Works.geojson',
+    color:'#4779C4', shape:'cross',
+    type:'icon', icon:'icons/water.png',
+    cluster: true,
+    iconSize: 20,
+  },
+];
+
+const RESET_ZOOM = 4;
+
+/* =====================================================================
+   ZOOM → ICON SIZE TABLE
+   ─────────────────────────────────────────────────────────────────────
+   Controls how much icons grow as user zooms in.
+   multiplier: icon renders at  layer.iconSize × multiplier  pixels.
+
+   zoom  4 → 1.0x  (e.g. 20px base → 20px)
+   zoom  7 → 1.4x  (20px → 28px)
+   zoom 10 → 1.9x  (20px → 38px)
+   zoom 13 → 2.5x  (20px → 50px)
+
+   Adjust multipliers here to taste.
+   ===================================================================== */
+const ZOOM_SCALE = [
+  { minZoom:  0, maxZoom:  4, multiplier: 1.0 },
+  { minZoom:  5, maxZoom:  6, multiplier: 1.1 },
+  { minZoom:  7, maxZoom:  8, multiplier: 1.5 },
+  { minZoom:  9, maxZoom: 10, multiplier: 1.9 },
+  { minZoom: 11, maxZoom: 12, multiplier: 2.3 },
+  { minZoom: 13, maxZoom: 20, multiplier: 2.8 },
+];
+
+function getZoomMultiplier(zoom) {
+  for (var i = 0; i < ZOOM_SCALE.length; i++) {
+    if (zoom >= ZOOM_SCALE[i].minZoom && zoom <= ZOOM_SCALE[i].maxZoom) {
+      return ZOOM_SCALE[i].multiplier;
+    }
+  }
+  return 1.0;
+}
+
+/* ── BASE MAP SECTION ── */
+const map = L.map('map').setView([25,78],4);
+const baseMaps = {
+  "Mapbox Streets": L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+  {
+    maxZoom:20,
+    tileSize:512,
+    zoomOffset:-1
+  }
+),
+
+"Mapbox Light": L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+  {
+    maxZoom:20,
+    tileSize:512,
+    zoomOffset:-1
+  }
+),
+
+"Mapbox Dark": L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+  {
+    maxZoom:20,
+    tileSize:512,
+    zoomOffset:-1
+  }
+),
+
+"Mapbox Outdoors": L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+  {
+    maxZoom:20,
+    tileSize:512,
+    zoomOffset:-1
+  }
+),
+
+"Mapbox Satellite": L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+  {
+    maxZoom:20,
+    tileSize:512,
+    zoomOffset:-1
+  }
+),
+
+"Mapbox Satellite Streets": L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+  {
+    maxZoom:20,
+    tileSize:512,
+    zoomOffset:-1
+  }
+),
+};
+baseMaps["Mapbox Light"].addTo(map); //default Base Map - Name Here
+map.zoomControl.remove();
+L.control.zoom({position:'topleft'}).addTo(map);
+L.control.layers(baseMaps,null,{position:'topleft'}).addTo(map);
+L.control.scale({position:'topleft',metric:true,imperial:false}).addTo(map);
+
+/* ── INDIA BOUNDARIES: Outer & with states ── */
+fetch(baseURL + 'data/India_border.geojson').then(function(r){return r.json();}).then(function(data){
+  L.geoJSON(data,{style:{color:'#000000',weight:0.8,opacity:1,fill:false}}).addTo(map);
+}).catch(function(){});
+
+fetch(baseURL + 'data/India_States.geojson').then(function(r){return r.json();}).then(function(data){
+  L.geoJSON(data,{style:{color:'#000000',weight:0.0,opacity:0.8,fill:false}}).addTo(map);
+}).catch(function(){});
+
+
+/* ── FONT AWESOME PROJECT ICONS — industry standard ── */
+function projectIconSVG(projectId, color, size){
+  size=size||24;
+  var iconClass='';
+  switch(projectId){
+    case 'arch': iconClass='fa-building'; break;
+    case 'solar': iconClass='fa-sun'; break;
+    case 'drain': iconClass='fa-water'; break;
+    case 'city': iconClass='fa-city'; break;
+    case 'hydraulic': iconClass='fa-water'; break;
+    case 'water': iconClass='fa-droplet'; break;
+    default: iconClass='fa-map-pin';
+  }
+  return '<i class="fas '+iconClass+'" style="font-size:'+size+'px; color:'+color+'; text-shadow: 0 1px 2px rgba(0,0,0,0.2);"></i>';
+}
+
+/* ── SHAPES ── */
+function shapeSVG(shape,color,size){
+  size=size||12; const c=size/2;
+  switch(shape){
+    case 'circle':   return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg"><circle cx="'+c+'" cy="'+c+'" r="'+(c-1)+'" fill="'+color+'" stroke="#fff" stroke-width="1.5"/></svg>';
+    case 'square':   return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg"><rect x="'+(c*.25)+'" y="'+(c*.25)+'" width="'+(c*1.5)+'" height="'+(c*1.5)+'" transform="rotate(45 '+c+' '+c+')" fill="'+color+'" stroke="#fff" stroke-width="1.5"/></svg>';
+    case 'triangle': return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg"><polygon points="'+c+',1 '+(size-1)+','+(size-1)+' 1,'+(size-1)+'" fill="'+color+'" stroke="#fff" stroke-width="1.5"/></svg>';
+    case 'star': {
+      var pts=[],r1=c-1,r2=r1*.45;
+      for(var i=0;i<10;i++){var a=(Math.PI/5)*i-Math.PI/2,r=i%2===0?r1:r2;pts.push((c+r*Math.cos(a))+','+(c+r*Math.sin(a)));}
+      return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg"><polygon points="'+pts.join(' ')+'" fill="'+color+'" stroke="#fff" stroke-width="1"/></svg>';
+    }
+    case 'cross': {
+      var t=size*.28,o=size*.36;
+      return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg"><rect x="'+o+'" y="1" width="'+t+'" height="'+(size-2)+'" rx="1" fill="'+color+'" stroke="#fff" stroke-width="0.5"/><rect x="1" y="'+o+'" width="'+(size-2)+'" height="'+t+'" rx="1" fill="'+color+'" stroke="#fff" stroke-width="0.5"/></svg>';
+    }
+    case 'hexagon': {
+      var pts=[];
+      for(var i=0;i<6;i++){var a=(Math.PI/3)*i-Math.PI/6;pts.push((c+(c-1.5)*Math.cos(a))+','+(c+(c-1.5)*Math.sin(a)));}
+      return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg"><polygon points="'+pts.join(' ')+'" fill="'+color+'" stroke="#fff" stroke-width="1.5"/></svg>';
+    }
+    default: return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'"><circle cx="'+c+'" cy="'+c+'" r="'+(c-1)+'" fill="'+color+'" stroke="#fff" stroke-width="1.5"/></svg>';
+  }
+}
+
+/* ── ICON FACTORY — zoom-aware ── */
+function shapeIcon(layer, zoom) {
+  zoom = zoom || map.getZoom();
+  var mult = getZoomMultiplier(zoom);
+  var base = layer.iconSize || 20;
+  var s = Math.round(base * mult);
+
+  if (layer.type === 'icon') {
+    // Use Font Awesome icons with proper centering
+    return L.divIcon({
+      html: '<div class="project-icon" style="display:flex;align-items:center;justify-content:center;width:'+s+'px;height:'+s+'px;background:rgba(255,255,255,0.9);border-radius:50%;box-shadow:var(--shadow-lg);">' + projectIconSVG(layer.id, layer.color, Math.round(s*0.6)) + '</div>',
+      className: '', iconSize:[s,s], iconAnchor:[s/2,s/2]
+    });
+  }
+  return L.divIcon({
+    html: shapeSVG(layer.shape || 'circle', layer.color, s),
+    className: '', iconSize:[s,s], iconAnchor:[s/2,s/2]
+  });
+}
+
+function swatchHTML(layer,size){
+  size=size||26;
+  if(layer.type==='icon') return '<div style="width:'+size+'px;height:'+size+'px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.8);border-radius:50%;box-shadow:var(--shadow-sm);">'+projectIconSVG(layer.id,layer.color,Math.round(size*0.65))+'</div>';
+  return shapeSVG(layer.shape||'circle',layer.color,size-4);
+}
+
+/* ── PHOTOS ── */
+function getPhotos(props){
+  var photos=[];
+  if(props.Photos&&props.Photos!=='NULL'&&props.Photos.trim()) props.Photos.split('|').forEach(function(p){var c=p.trim().replace(/\\/g,'/');if(c)photos.push(baseURL + c);});
+  for(var i=1;i<=10;i++){var v=props['Photo'+i];if(v&&v!=='NULL'&&v.trim())photos.push(baseURL + v.trim().replace(/\\/g,'/')); }
+  if(!photos.length&&props.Photo&&props.Photo!=='NULL'&&props.Photo.trim())photos.push(baseURL + props.Photo.trim().replace(/\\/g,'/'));
+
+  // ── DEFAULT IMAGE ──
+  // If no photos found at all, show default.png from images folder
+  if(!photos.length){
+    photos.push(baseURL + 'images/default.PNG');
+  }
+
+  return photos;
+}
+
+/* ── GALLERY Photos Auto Slider ── */
+var galleryPhotos=[],galleryIndex=0;
+var galleryAutoSlide=null;
+function openPanel(feature,layerCfg){
+  var p=feature.properties;
+  galleryPhotos=getPhotos(p); galleryIndex=0; 
+  if(galleryAutoSlide){
+  clearInterval(galleryAutoSlide);
+}
+  renderGallery();
+  if(galleryPhotos.length > 1){
+  galleryAutoSlide = setInterval(function(){
+    galleryStep(1);
+  }, 1500); // 1.5 seconds
+}
+  var tag=document.getElementById('panel-tag');
+  tag.textContent=layerCfg.name; tag.style.background=layerCfg.color+'22'; tag.style.color=layerCfg.color; tag.style.border='1px solid '+layerCfg.color+'44';
+  document.getElementById('panel-name').textContent   =p.Name||p.Project_Na||'—';
+  document.getElementById('panel-country').textContent=p.Country||'—';
+  document.getElementById('panel-state').textContent  =p.State||'—';
+  document.getElementById('panel-desc').textContent   =p.Description||p.Descriptio||'—';
+  document.getElementById('detailPanel').classList.add('open');
+}
+function closePanel(){
+
+  if(galleryAutoSlide){
+    clearInterval(galleryAutoSlide);
+  }
+
+  document.getElementById('detailPanel').classList.remove('open');
+}
+function renderGallery(){
+  var img=document.getElementById('gallery-img'),ph=document.getElementById('gallery-placeholder'),
+      ctr=document.getElementById('galleryCounter'),prev=document.getElementById('galleryPrev'),
+      next=document.getElementById('galleryNext'),dots=document.getElementById('galleryDots');
+  if(!galleryPhotos.length){img.style.display='none';ph.style.display='flex';ctr.style.display='none';prev.style.display=next.style.display='none';dots.innerHTML='';return;}
+  ph.style.display='none';img.style.display='block';img.style.opacity='0';img.src=galleryPhotos[galleryIndex];
+  img.onload=function(){img.style.opacity='1';};
+  img.onerror=function(){img.style.display='none';ph.style.display='flex';ph.querySelector('span').textContent='Image not found';};
+  var m=galleryPhotos.length>1;
+  ctr.style.display=m?'block':'none';ctr.textContent=(galleryIndex+1)+' / '+galleryPhotos.length;
+  prev.style.display=next.style.display=m?'flex':'none';
+  dots.innerHTML='';
+  if(m){galleryPhotos.forEach(function(_,i){var d=document.createElement('div');d.className='gdot'+(i===galleryIndex?' active':'');d.onclick=function(){galleryIndex=i;renderGallery();};dots.appendChild(d);});}
+}
+function galleryStep(dir){galleryIndex=(galleryIndex+dir+galleryPhotos.length)%galleryPhotos.length;renderGallery();}
+
+/* ── GLOBAL STATE ── */
+var DATA={},LAYER_OBJ={},COUNTRY_STATES={},layerChecked={};
+var currentView='map',currentSort='layer',searchQuery='',groupOpenState={};
+LAYERS.forEach(function(l){layerChecked[l.id]=true;});
+
+/* ── Get base URL for GitHub Pages ── */
+var baseURL = window.location.pathname.includes('github.io') 
+  ? 'https://raw.githubusercontent.com/paperkarft/infraplan-webmap/main/' 
+  : './';
+
+/* ── LOAD DATA ── */
+Promise.all(LAYERS.map(function(l){
+  var url = baseURL + l.file;
+  return fetch(url).then(function(r){return r.json();});
+}))
+  .then(function(results){
+    results.forEach(function(data,i){DATA[LAYERS[i].id]=data;});
+    initFilters(); buildSidebar(); updateMap();
+  })
+  .catch(function(err){console.error(err);alert('Could not load data files.');});
+
+/* ── FILTERS ── */
+function initFilters(){
+  COUNTRY_STATES={};
+  Object.values(DATA).forEach(function(d){d.features.forEach(function(f){
+    var c=f.properties.Country,s=f.properties.State;
+    if(!c)return;
+    if(!COUNTRY_STATES[c])COUNTRY_STATES[c]=new Set();
+    if(s&&s!=='NULL')COUNTRY_STATES[c].add(s);
+  });});
+  var cf=document.getElementById('countryFilter');
+  cf.innerHTML='<option value="All">All Countries</option>';
+  Object.keys(COUNTRY_STATES).sort().forEach(function(c){cf.add(new Option(c,c));});
+  rebuildStateDropdown('All');
+}
+function rebuildStateDropdown(country){
+  var sf=document.getElementById('stateFilter');
+  sf.innerHTML='<option value="All">All States</option>';
+  var states=country==='All'
+    ?[...new Set(Object.values(COUNTRY_STATES).flatMap(function(s){return[...s];}))].sort()
+    :[...(COUNTRY_STATES[country]||[])].sort();
+  states.forEach(function(s){sf.add(new Option(s,s));});
+}
+
+/* ── SIDEBAR — with cluster toggle per layer ── */
+function buildSidebar(){
+  var container=document.getElementById('layerList');
+  LAYERS.forEach(function(l){
+    var item=document.createElement('div');
+    item.className='layer-item'; item.id='item_'+l.id;
+
+    // checked state for cluster toggle
+    var clusterChecked = l.cluster ? 'checked' : '';
+
+    item.innerHTML=
+      '<div class="layer-main-row" onclick="toggleLayer(\''+l.id+'\')">'+
+        '<div class="layer-left">'+
+          '<div class="cb-box checked" id="'+l.id+'CB" style="--layer-color:'+l.color+'"></div>'+
+          '<div class="shape-swatch">'+swatchHTML(l,26)+'</div>'+
+          '<span class="layer-name">'+l.name+'</span>'+
+        '</div>'+
+        '<span class="layer-count" id="'+l.id+'Count">0</span>'+
+      '</div>'+
+      '<div class="layer-sub-row">'+
+        '<span class="cluster-label">Cluster</span>'+
+        '<label class="toggle-switch" onclick="event.stopPropagation()" title="Toggle clustering for this layer">'+
+          '<input type="checkbox" id="'+l.id+'Cluster" '+clusterChecked+' onchange="toggleCluster(\''+l.id+'\')">'+
+          '<span class="toggle-track"></span>'+
+          '<span class="toggle-thumb"></span>'+
+        '</label>'+
+      '</div>';
+
+    container.appendChild(item);
+  });
+}
+
+function toggleLayer(id){
+  layerChecked[id]=!layerChecked[id];
+  var box=document.getElementById(id+'CB'),item=document.getElementById('item_'+id);
+  if(layerChecked[id]){box.classList.add('checked');item.classList.remove('unchecked');}
+  else{box.classList.remove('checked');item.classList.add('unchecked');}
+  updateMap();
+  if(currentView==='list') renderListView();
+}
+
+/* ── CLUSTER TOGGLE — flips cluster flag and redraws that layer only ── */
+function toggleCluster(id){
+  var layer=LAYERS.find(function(l){return l.id===id;});
+  if(!layer)return;
+  layer.cluster = document.getElementById(id+'Cluster').checked;
+  // redraw only this layer
+  if(LAYER_OBJ[id]){map.removeLayer(LAYER_OBJ[id]);LAYER_OBJ[id]=null;}
+  if(!layerChecked[id])return;
+  var country=document.getElementById('countryFilter').value;
+  var state=document.getElementById('stateFilter').value;
+  var filtered=getVisible(id,country,state);
+  if(!filtered.length)return;
+  LAYER_OBJ[id]=buildLayerGroup(layer,filtered);
+  LAYER_OBJ[id].addTo(map);
+}
+
+/* ── SEARCH ── */
+document.getElementById('searchInput').addEventListener('input',function(){
+  searchQuery=this.value.trim().toLowerCase();
+  document.getElementById('searchClear').style.display=searchQuery?'block':'none';
+  updateMap();
+  if(currentView==='list') renderListView();
+});
+function clearSearch(){
+  document.getElementById('searchInput').value='';searchQuery='';
+  document.getElementById('searchClear').style.display='none';
+  document.getElementById('searchCount').textContent='';
+  updateMap();if(currentView==='list')renderListView();
+}
+function matchesSearch(f){
+  if(!searchQuery)return true;
+  var p=f.properties;
+  return [p.Name||'',p.Project_Na||'',p.Country||'',p.State||'',p.Description||'',p.Descriptio||''].join(' ').toLowerCase().indexOf(searchQuery)!==-1;
+}
+
+/* ── FILTER HELPERS ── */
+function filterFeatures(data,country,state){
+  return data.features.filter(function(f){
+    return(country==='All'||f.properties.Country===country)&&(state==='All'||f.properties.State===state);
+  });
+}
+function getVisible(layerId,country,state){
+  return filterFeatures(DATA[layerId],country,state).filter(matchesSearch);
+}
+
+/* ── VIEW SWITCH ── */
+function setView(mode){
+  currentView=mode;
+  document.getElementById('map').style.display     =mode==='map' ?'block':'none';
+  document.getElementById('listView').style.display=mode==='list'?'flex' :'none';
+  document.getElementById('btnMapView').classList.toggle('active', mode==='map');
+  document.getElementById('btnListView').classList.toggle('active',mode==='list');
+  if(mode==='list')renderListView();
+  if(mode==='map') setTimeout(function(){map.invalidateSize();},50);
+}
+
+/* ── SORT ── */
+function setSort(sort){
+  currentSort=sort;
+  document.querySelectorAll('.sort-tab').forEach(function(t){t.classList.toggle('active',t.dataset.sort===sort);});
+  groupOpenState={};
+  renderListView();
+}
+
+/* ── HIGHLIGHT ── */
+function highlight(text,query){
+  if(!query||!text)return text||'';
+  var idx=text.toLowerCase().indexOf(query);
+  if(idx===-1)return text;
+  return text.substring(0,idx)+'<mark>'+text.substring(idx,idx+query.length)+'</mark>'+text.substring(idx+query.length);
+}
+
+/* =====================================================================
+   BUILD LAYER GROUP — respects layer.cluster flag + zoom-aware icons
+   ===================================================================== */
+function buildLayerGroup(layer, features){
+  var zoom = map.getZoom();
+
+  if (layer.cluster) {
+    // ── CLUSTERED ──
+    var lc = layer.color;
+    var cg = L.markerClusterGroup({
+      maxClusterRadius: 35,
+      iconCreateFunction: function(cl){
+        var n=cl.getChildCount(),s=n<10?30:n<50?36:42;
+        return L.divIcon({html:'<div class="custom-cluster" style="width:'+s+'px;height:'+s+'px;background:'+lc+';font-size:'+Math.round(s*.38)+'px;">'+n+'</div>',className:'',iconSize:[s,s],iconAnchor:[s/2,s/2]});
+      },
+      spiderfyOnMaxZoom:true,showCoverageOnHover:false,zoomToBoundsOnClick:true,
+    });
+    features.forEach(function(feature){
+      var coords=feature.geometry.coordinates;
+      var marker=L.marker(L.latLng(coords[1],coords[0]),{icon:shapeIcon(layer,zoom)});
+      addMarkerInteraction(marker,feature,layer);
+      cg.addLayer(marker);
+    });
+    return cg;
+
+  } else {
+    // ── UNCLUSTERED — plain layer group, each marker individual ──
+    var group = L.layerGroup();
+    features.forEach(function(feature){
+      var coords=feature.geometry.coordinates;
+      var marker=L.marker(L.latLng(coords[1],coords[0]),{icon:shapeIcon(layer,zoom)});
+      addMarkerInteraction(marker,feature,layer);
+      group.addLayer(marker);
+    });
+    return group;
+  }
+}
+
+function addMarkerInteraction(marker,feature,layer){
+  var name=feature.properties.Name||feature.properties.Project_Na||'';
+  if(name)marker.bindTooltip(name,{className:'marker-tooltip',direction:'top',offset:[0,-10],sticky:false});
+  marker.on('click',function(){openPanel(feature,layer);});
+}
+
+/* =====================================================================
+   ZOOM EVENT — re-render all markers when zoom changes
+   so icon sizes update live as user zooms
+   ===================================================================== */
+map.on('zoomend', function(){
+  var country=document.getElementById('countryFilter').value;
+  var state=document.getElementById('stateFilter').value;
+
+  LAYERS.forEach(function(l){
+    if(!layerChecked[l.id])return;
+    if(LAYER_OBJ[l.id]){map.removeLayer(LAYER_OBJ[l.id]);LAYER_OBJ[l.id]=null;}
+    var filtered=getVisible(l.id,country,state);
+    if(!filtered.length)return;
+    LAYER_OBJ[l.id]=buildLayerGroup(l,filtered);
+    LAYER_OBJ[l.id].addTo(map);
+  });
+
+  // zoom auto-reset filter
+  if(map.getZoom()<=RESET_ZOOM){
+    var cf=document.getElementById('countryFilter'),sf=document.getElementById('stateFilter');
+    if(cf.value!=='All'||sf.value!=='All'){
+      cf.value='All';sf.value='All';rebuildStateDropdown('All');
+      var badge=document.getElementById('zoomResetBadge');
+      badge.style.display='block';
+      setTimeout(function(){badge.style.display='none';},2500);
+      updateMap();
+      if(currentView==='list')renderListView();
+    }
+  }
+});
+
+/* ── MAIN MAP UPDATE ── */
+function updateMap(){
+  var country=document.getElementById('countryFilter').value;
+  var state=document.getElementById('stateFilter').value;
+  var total=0,bounds=null;
+  var vc=new Set(),vs=new Set();
+
+  LAYERS.forEach(function(l){
+    if(LAYER_OBJ[l.id]){map.removeLayer(LAYER_OBJ[l.id]);LAYER_OBJ[l.id]=null;}
+    if(!layerChecked[l.id]){document.getElementById(l.id+'Count').innerText='—';return;}
+
+    var filtered=getVisible(l.id,country,state);
+    document.getElementById(l.id+'Count').innerText=filtered.length;
+    total+=filtered.length;
+    filtered.forEach(function(f){
+      if(f.properties.Country)vc.add(f.properties.Country);
+      if(f.properties.State&&f.properties.State!=='NULL')vs.add(f.properties.State);
+    });
+    if(!filtered.length)return;
+
+    LAYER_OBJ[l.id]=buildLayerGroup(l,filtered);
+    LAYER_OBJ[l.id].addTo(map);
+
+    // compute bounds
+    var latlngs=filtered.map(function(f){return[f.geometry.coordinates[1],f.geometry.coordinates[0]];});
+    if(latlngs.length){var b=L.latLngBounds(latlngs);bounds=bounds?bounds.extend(b):b;}
+  });
+
+  document.getElementById('totalCount').innerText   =total;
+  document.getElementById('statCountries').innerText=vc.size;
+  document.getElementById('statStates').innerText   =vs.size;
+  document.getElementById('searchCount').textContent=searchQuery?(total+' result'+(total!==1?'s':'')+' found'):'';
+
+  if(bounds&&bounds.isValid()&&(country!=='All'||state!=='All'||searchQuery))
+    map.fitBounds(bounds,{padding:[60,60],maxZoom:12});
+}
+
+/* ── LIST VIEW ── */
+function renderListView(){
+  var country=document.getElementById('countryFilter').value;
+  var state=document.getElementById('stateFilter').value;
+  var scroll=document.getElementById('listScroll');
+  var empty=document.getElementById('listEmpty');
+  var allItems=[];
+  LAYERS.forEach(function(l){
+    if(!layerChecked[l.id])return;
+    getVisible(l.id,country,state).forEach(function(f){allItems.push({feature:f,layer:l});});
+  });
+  document.getElementById('listCountLabel').textContent=allItems.length;
+  if(!allItems.length){
+    Array.from(scroll.children).forEach(function(c){if(c.id!=='listEmpty')c.remove();});
+    empty.style.display='flex';return;
+  }
+  empty.style.display='none';
+  var groups=[];
+  if(currentSort==='layer'){
+    LAYERS.forEach(function(l){
+      if(!layerChecked[l.id])return;
+      var items=allItems.filter(function(i){return i.layer.id===l.id;});
+      if(!items.length)return;
+      groups.push({id:'layer_'+l.id,label:l.name,color:l.color,iconHTML:swatchHTML(l,22),items:items});
+    });
+  } else if(currentSort==='country'){
+    var byCountry={};
+    allItems.forEach(function(item){
+      var c=item.feature.properties.Country||'Unknown';
+      if(!byCountry[c])byCountry[c]=[];
+      byCountry[c].push(item);
+    });
+    Object.keys(byCountry).sort().forEach(function(c){
+      groups.push({id:'country_'+c,label:c,color:'#94a3b8',iconHTML:'🌐',items:byCountry[c]});
+    });
+  } else {
+    allItems.sort(function(a,b){
+      return(a.feature.properties.Name||a.feature.properties.Project_Na||'').localeCompare(b.feature.properties.Name||b.feature.properties.Project_Na||'');
+    });
+    groups.push({id:'az_all',label:'All Projects — A to Z',color:'#64748b',iconHTML:'',items:allItems});
+  }
+  Array.from(scroll.children).forEach(function(c){if(c.id!=='listEmpty')c.remove();});
+  groups.forEach(function(group){
+    if(groupOpenState[group.id]===undefined) groupOpenState[group.id]=!!searchQuery;
+    var isOpen=groupOpenState[group.id];
+    var groupEl=document.createElement('div'); groupEl.className='list-group';
+    var hdr=document.createElement('div');
+    hdr.className='list-group-hdr'+(isOpen?' open':'');
+    hdr.innerHTML=(group.iconHTML?'<div class="list-group-hdr-icon">'+group.iconHTML+'</div>':'')+
+      '<div class="list-group-hdr-name" style="color:#000000">'+group.label+'</div>'+
+      '<div class="list-group-hdr-count">'+group.items.length+'</div>'+
+      '<div class="list-group-hdr-arrow">›</div>';
+    var body=document.createElement('div');
+    body.className='list-group-body'+(isOpen?' open':'');
+    hdr.addEventListener('click',function(){
+      groupOpenState[group.id]=!groupOpenState[group.id];
+      hdr.classList.toggle('open',groupOpenState[group.id]);
+      body.classList.toggle('open',groupOpenState[group.id]);
+    });
+    group.items.forEach(function(item,idx){
+      var p=item.feature.properties;
+      var name=p.Name||p.Project_Na||'Unnamed Project';
+      var location=[p.State,p.Country].filter(function(x){return x&&x!=='NULL';}).join(', ');
+      var desc=p.Description||p.Descriptio||'';
+      var fIdx=DATA[item.layer.id].features.indexOf(item.feature);
+      var card=document.createElement('div'); card.className='list-card';
+      card.innerHTML='<div class="list-card-num">'+(idx+1)+'</div>'+
+        '<div class="list-card-body">'+
+          '<div class="list-card-name">'+highlight(name,searchQuery)+'</div>'+
+          '<div class="list-card-location">'+highlight(location,searchQuery)+'</div>'+
+          (desc?'<div class="list-card-desc">'+highlight(desc,searchQuery)+'</div>':'')+
+        '</div><div class="list-card-arrow">›</div>';
+      card.addEventListener('click',function(){openPanel(DATA[item.layer.id].features[fIdx],item.layer);});
+      body.appendChild(card);
+    });
+    groupEl.appendChild(hdr); groupEl.appendChild(body);
+    scroll.insertBefore(groupEl,empty);
+  });
+}
+
+/* ── EVENTS ── */
+document.getElementById('countryFilter').onchange=function(){rebuildStateDropdown(this.value);document.getElementById('stateFilter').value='All';updateMap();if(currentView==='list')renderListView();};
+document.getElementById('stateFilter').onchange=function(){updateMap();if(currentView==='list')renderListView();};
+document.getElementById('resetBtn').onclick=function(){
+  document.getElementById('countryFilter').value='All';
+  document.getElementById('stateFilter').value='All';
+  rebuildStateDropdown('All');clearSearch();
+  LAYERS.forEach(function(l){
+    layerChecked[l.id]=true;
+    document.getElementById(l.id+'CB').classList.add('checked');
+    document.getElementById('item_'+l.id).classList.remove('unchecked');
+  });
+  groupOpenState={};closePanel();updateMap();map.setView([20,78],4);
+  if(currentView==='list')renderListView();
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "Architectural_3D_Mapping",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "Shree Mahalaxmi Temple", "Descriptio": "Architectural 3D Mapping", "Country": "India", "State": "Maharashtra", "Photos": null }, "geometry": { "type": "Point", "coordinates": [ 74.223171580546705, 16.69743581793615 ] } }
+]
+}

@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "Solar_Energy_Projects",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "Murbad", "Descriptio": "Solar Energy Project", "Country": "India", "State": "Maharashtra", "Photos": null }, "geometry": { "type": "Point", "coordinates": [ 73.3888748, 19.261164499999989 ] } },
+{ "type": "Feature", "properties": { "Name": "Balwada", "Descriptio": "Solar Energy Project", "Country": "India", "State": "Madhya Pradesh", "Photos": null }, "geometry": { "type": "Point", "coordinates": [ 75.724408672418903, 22.057807251313569 ] } }
+]
+}

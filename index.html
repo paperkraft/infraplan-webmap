@@ -118,6 +118,17 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
 /* #sidebar-toggle:hover { background:var(--bg2); box-shadow:0 4px 16px rgba(0,0,0,0.16); transform:translateY(-50%) scale(1.08); } */
 #sidebar-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; display:none; }
 #sidebar-overlay.show { display:block; }
+@media (max-width: 900px) {
+  #sidebar {
+    transform:translateX(-100%);
+  }
+  #sidebar.open { transform:translateX(0); }
+  #floatingMenuBtn { opacity:1; visibility:visible; pointer-events:auto; }
+  #floatingMenuBtn.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+  #map.with-list { margin-right:0; }
+  #listView { width:100%; max-width:100%; }
+  #listCloseFloat { left:auto; right:14px; }
+}
 #sidebar-header {
   padding:12px 14px 10px;
   font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700;
@@ -219,22 +230,52 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
 .leaflet-top.leaflet-right.hidden { opacity:0; visibility:hidden; pointer-events:none; }
 
 /* LIST VIEW */
-#listView { flex:1; overflow:hidden; background:var(--bg); display:none; flex-direction:column; }
+#listView {
+  position:fixed; top:0; right:0;
+  width:var(--sidebar-w); height:100vh;
+  overflow:hidden; background:var(--bg);
+  display:none; flex-direction:column;
+  border-left:1px solid var(--border);
+  box-shadow:-4px 0 16px rgba(0,0,0,0.08);
+  z-index:950;
+}
 #listView.active { display:flex; }
+#map.with-list { margin-right:var(--sidebar-w); transition:margin-right 0.3s ease; }
 #listToolbar {
-  padding:10px 80px; border-bottom:1px solid var(--border);
+  padding:10px 14px; border-bottom:1px solid var(--border);
   display:flex; align-items:center; justify-content:space-between;
   flex-shrink:0; background:var(--bg2); gap:10px;
 }
+#listToolbar .tl-right { display:flex; align-items:center; gap:8px; }
+#closeListBtn {
+  min-height:32px; padding:0 12px;
+  border:1px solid var(--border); border-radius:8px;
+  background:var(--bg); color:var(--text-dim);
+  cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif;
+}
+#closeListBtn:hover { background:var(--bg3); border-color:var(--acc); color:var(--text); }
 #listToolbar .tl-left { display:flex; align-items:center; gap:8px; }
 #listCountLabel { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:var(--acc); }
 #listToolbar .tl-meta { font-size:11px; color:var(--text-dim); }
+#listCloseFloat {
+  position:absolute;
+  top:14px; left:-42px;
+  width:34px; height:34px;
+  border:none; border-radius:50%;
+  background:#fff; color:var(--text);
+  box-shadow:0 10px 24px rgba(0,0,0,0.16);
+  cursor:pointer; display:none;
+  align-items:center; justify-content:center;
+  font-size:18px; z-index:960;
+}
+#listView.active #listCloseFloat { display:flex; }
+#listCloseFloat:hover { background:var(--bg2); }
 .sort-tabs { display:flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; flex-shrink:0; }
 .sort-tab { height:28px; padding:0 11px; background:var(--bg); border:none; color:var(--text-dim); font-size:11px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; border-right:1px solid var(--border); white-space:nowrap; transition:all 0.15s; }
 .sort-tab:last-child { border-right:none; }
 .sort-tab.active { background:var(--acc); color:#fff; }
 .sort-tab:hover:not(.active) { background:var(--bg3); color:var(--text); }
-#listScroll { flex:1; overflow-y:auto; padding:12px 80px; }
+#listScroll { flex:1; overflow-y:auto; padding:12px 14px; }
 .list-group { margin-bottom:8px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
 .list-group-hdr { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; background:var(--bg2); user-select:none; transition:background 0.15s; font-weight:600; }
 .list-group-hdr:hover { background:var(--bg3); }
@@ -253,7 +294,7 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
 .list-card-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; line-height:1.3; }
 .list-card-name mark { background:#3B82F644; color:var(--acc); border-radius:3px; padding:0 3px; font-weight:700; }
 .list-card-location { font-size:12px; color:var(--text-dim); margin-bottom:4px; font-weight:500; }
-.list-card-desc { font-size:12px; color:var(--text-dim); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.list-card-desc { font-size:12px; color:var(--text-dim); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .list-card-arrow { color:var(--text-dim); font-size:16px; padding-top:2px; transition:color 0.12s; }
 .list-card:hover .list-card-arrow { color:var(--acc); }
 #listEmpty { display:none; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; gap:12px; color:var(--text-dim); font-size:13px; text-align:center; }
@@ -378,12 +419,16 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
         <span id="listCountLabel">0</span>
         <span class="tl-meta">projects</span>
       </div>
-      <div class="sort-tabs">
-        <button class="sort-tab active" data-sort="layer"   onclick="setSort('layer')">By Layer</button>
-        <button class="sort-tab"        data-sort="country" onclick="setSort('country')">By Country</button>
-        <button class="sort-tab"        data-sort="az"      onclick="setSort('az')">A – Z</button>
+      <div class="tl-right">
+        <div class="sort-tabs">
+          <button class="sort-tab active" data-sort="layer"   onclick="setSort('layer')">By Layer</button>
+          <button class="sort-tab"        data-sort="country" onclick="setSort('country')">By Country</button>
+          <button class="sort-tab"        data-sort="az"      onclick="setSort('az')">A – Z</button>
+        </div>
+        <button id="closeListBtn" onclick="setView('map')" title="Close list">✕</button>
       </div>
     </div>
+    <button id="listCloseFloat" onclick="setView('map')" title="Close list panel">✕</button>
     <div id="listScroll">
       <div id="listEmpty">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -754,7 +799,7 @@ Promise.all(LAYERS.map(function(l){
 }))
   .then(function(results){
     results.forEach(function(data,i){DATA[LAYERS[i].id]=data;});
-    initFilters(); buildSidebar(); updateMap();
+    initFilters(); buildSidebar(); updateMap(); updateSidebarMode();
   })
   .catch(function(err){console.error(err);alert('Could not load data files.');});
 
@@ -870,12 +915,17 @@ function getVisible(layerId,country,state){
 /* ── VIEW SWITCH ── */
 function setView(mode){
   currentView=mode;
-  document.getElementById('map').style.display     =mode==='map' ?'block':'none';
-  document.getElementById('listView').style.display=mode==='list'?'flex' :'none';
+  document.getElementById('listView').classList.toggle('active', mode==='list');
+  document.getElementById('map').classList.toggle('with-list', mode==='list');
   document.getElementById('btnMapView').classList.toggle('active', mode==='map');
   document.getElementById('btnListView').classList.toggle('active',mode==='list');
-  if(mode==='list')renderListView();
-  if(mode==='map') setTimeout(function(){map.invalidateSize();},50);
+  if(mode==='list'){
+    if(window.innerWidth <= 900){
+      closeSidebar();
+    }
+    renderListView();
+  }
+  setTimeout(function(){map.invalidateSize();},50);
 }
 
 /* ── SORT ── */
@@ -1109,7 +1159,24 @@ function closeSidebar(){
   sidebar.classList.remove('open');
   menuBtn.classList.remove('hidden');
 }
-
+function updateSidebarMode(){
+  var sidebar=document.getElementById('sidebar');
+  var menuBtn=document.getElementById('floatingMenuBtn');
+  var mobile = window.innerWidth <= 900;
+  if(mobile){
+    sidebar.classList.remove('open');
+    menuBtn.classList.remove('hidden');
+  } else {
+    if(!sidebar.classList.contains('open')){
+      sidebar.classList.add('open');
+    }
+    menuBtn.classList.add('hidden');
+  }
+}
+window.addEventListener('resize', function(){
+  updateSidebarMode();
+  setTimeout(function(){map.invalidateSize();},50);
+});
 document.getElementById('countryFilter').onchange=function(){rebuildStateDropdown(this.value);document.getElementById('stateFilter').value='All';updateMap();if(currentView==='list')renderListView();};
 document.getElementById('stateFilter').onchange=function(){updateMap();if(currentView==='list')renderListView();};
 document.getElementById('resetBtn').onclick=function(){

@@ -763,7 +763,7 @@ function openPanel(feature,layerCfg){
   if(galleryPhotos.length > 1){
   galleryAutoSlide = setInterval(function(){
     galleryStep(1);
-  }, 1500); // 1.5 seconds
+  }, 5000); // 5 seconds
 }
   var tag=document.getElementById('panel-tag');
   tag.textContent=layerCfg.name; tag.style.background=layerCfg.color+'22'; tag.style.color=layerCfg.color; tag.style.border='1px solid '+layerCfg.color+'44';

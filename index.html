@@ -134,27 +134,25 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
   font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700;
   letter-spacing:1px; color:var(--text-dim); text-transform:uppercase;
   border-bottom:1px solid var(--border); flex-shrink:0;
-  margin-top:10px;
 }
 
 /* Search */
-#searchBox { padding:12px 14px; border-bottom:1px solid var(--border); flex-shrink:0; position:relative; }
+#searchBox { padding:10px 14px; border-bottom:1px solid var(--border); flex-shrink:0; position:relative; }
 #searchIcon {
-  position:absolute; left:16px; top:50%; transform:translateY(-50%);
-  color:var(--text-dim); font-size:16px; pointer-events:none;
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  color:var(--text-dim); font-size:14px; pointer-events:none;
 }
 #searchInput {
-  width:100%; height:44px; background:var(--bg2); border:1px solid var(--border);
-  border-radius:10px; color:var(--text); font-size:13px;
-  padding:0 44px 0 42px; outline:none; font-family:'DM Sans',sans-serif; transition:border-color 0.15s, box-shadow 0.15s;
+  width:100%; height:34px; background:var(--bg2); border:1px solid var(--border);
+  border-radius:8px; color:var(--text); font-size:13px;
+  padding:0 34px 0 34px; outline:none; font-family:'DM Sans',sans-serif; transition:border-color 0.15s, box-shadow 0.15s;
   box-shadow: var(--shadow-sm);
 }
 #searchInput::placeholder { color:var(--text-dim); }
 #searchInput:focus { border-color:var(--acc); box-shadow: var(--shadow-md); }
-#searchClear { position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--text-dim); cursor:pointer; font-size:14px; display:none; width:26px; height:26px; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.85); }
+#searchClear { position:absolute; right:10px; top:50%; transform:translateY(-50%); color:var(--text-dim); cursor:pointer; font-size:12px; display:none; width:22px; height:22px; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,0.85); }
 #searchClear.visible { display:flex; }
 #searchClear:hover { color:var(--text); background:rgba(255,255,255,1); }
-#searchCount { font-size:11px; color:var(--text-dim); margin-top:8px; padding:0 2px; min-height:16px; }
 
 #layerList { overflow-y:auto; flex:1; }
 
@@ -276,25 +274,25 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
 .sort-tab.active { background:var(--acc); color:#fff; }
 .sort-tab:hover:not(.active) { background:var(--bg3); color:var(--text); }
 #listScroll { flex:1; overflow-y:auto; padding:12px 14px; }
-.list-group { margin-bottom:8px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
-.list-group-hdr { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; background:var(--bg2); user-select:none; transition:background 0.15s; font-weight:600; }
+.list-group { margin-bottom:6px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.list-group-hdr { display:flex; align-items:center; gap:8px; padding:8px 12px; cursor:pointer; background:var(--bg2); user-select:none; transition:background 0.15s; font-weight:600; }
 .list-group-hdr:hover { background:var(--bg3); }
-.list-group-hdr-icon { width:28px; height:28px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; }
-.list-group-hdr-name { font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; flex:1; color:var(--text); }
-.list-group-hdr-count { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; color:var(--acc); margin-right:6px; }
-.list-group-hdr-arrow { color:var(--text-dim); font-size:16px; transition:transform 0.2s; }
+.list-group-hdr-icon { width:24px; height:24px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.list-group-hdr-name { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; flex:1; color:var(--text); }
+.list-group-hdr-count { font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; color:var(--acc); margin-right:6px; }
+.list-group-hdr-arrow { color:var(--text-dim); font-size:14px; transition:transform 0.2s; }
 .list-group-hdr.open .list-group-hdr-arrow { transform:rotate(90deg); }
 .list-group-body { display:none; border-top:1px solid var(--border); }
 .list-group-body.open { display:block; }
-.list-card { display:flex; align-items:flex-start; gap:10px; padding:11px 14px; cursor:pointer; border-bottom:1px solid var(--border); transition:all 0.15s; box-shadow: var(--shadow-sm); }
+.list-card { display:flex; align-items:flex-start; gap:8px; padding:8px 12px; cursor:pointer; border-bottom:1px solid var(--border); transition:all 0.15s; box-shadow: var(--shadow-sm); }
 .list-card:last-child { border-bottom:none; }
 .list-card:hover { background:var(--bg3); transform: translateY(-1px); box-shadow: var(--shadow-md); }
-.list-card-num { font-family:'Rajdhani',sans-serif; font-size:12px; color:var(--text-dim); min-width:20px; padding-top:2px; }
+.list-card-num { font-family:'Rajdhani',sans-serif; font-size:11px; color:var(--text-dim); min-width:18px; padding-top:2px; }
 .list-card-body { flex:1; min-width:0; }
-.list-card-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; line-height:1.3; }
+.list-card-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; line-height:1.2; }
 .list-card-name mark { background:#3B82F644; color:var(--acc); border-radius:3px; padding:0 3px; font-weight:700; }
-.list-card-location { font-size:12px; color:var(--text-dim); margin-bottom:4px; font-weight:500; }
-.list-card-desc { font-size:12px; color:var(--text-dim); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.list-card-location { font-size:11px; color:var(--text-dim); margin-bottom:2px; font-weight:500; }
+.list-card-desc { font-size:11px; color:var(--text-dim); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .list-card-arrow { color:var(--text-dim); font-size:16px; padding-top:2px; transition:color 0.12s; }
 .list-card:hover .list-card-arrow { color:var(--acc); }
 #listEmpty { display:none; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; gap:12px; color:var(--text-dim); font-size:13px; text-align:center; }
@@ -367,7 +365,6 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
 
 <div id="container">
   <div id="sidebar" class="open">
-    <div id="sidebar-toggle" onclick="closeSidebar()" title="Hide sidebar"></div>
     
     <div id="stats-bar">
       <div class="stat-box"><div class="stat-label">Countries</div><div class="stat-value" id="statCountries">0</div></div>
@@ -375,24 +372,6 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
       <div class="stat-box"><div class="stat-label">States</div><div class="stat-value" id="statStates">0</div></div>
       <div class="stat-divider"></div>
       <div class="stat-box"><div class="stat-label">Projects</div><div class="stat-value" id="totalCount">0</div></div>
-    </div>
-    
-    <div id="topbar-controls" style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px;">
-      <select id="countryFilter"><option value="All">All Countries</option></select>
-      <select id="stateFilter"><option value="All">All States</option></select>
-      <div style="display:flex;gap:6px;">
-        <button id="resetBtn">↺ Reset</button>
-        <div id="viewToggle">
-          <button class="view-btn active" id="btnMapView" onclick="setView('map')">
-            <i class="fas fa-map"></i>
-            Map
-          </button>
-          <button class="view-btn" id="btnListView" onclick="setView('list')">
-            <i class="fas fa-list"></i>
-            List
-          </button>
-        </div>
-      </div>
     </div>
     
     <div id="searchBox">
@@ -403,7 +382,6 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
           <i class="fas fa-times"></i>
         </span>
       </div>
-      <div id="searchCount"></div>
     </div>
     <div id="zoomBadge">Zoom: 4</div>
     
@@ -412,30 +390,6 @@ select:hover, #resetBtn:hover { border-color:var(--acc); box-shadow: var(--shado
   </div>
 
   <div id="map"></div>
-
-  <div id="listView">
-    <div id="listToolbar">
-      <div class="tl-left">
-        <span id="listCountLabel">0</span>
-        <span class="tl-meta">projects</span>
-      </div>
-      <div class="tl-right">
-        <div class="sort-tabs">
-          <button class="sort-tab active" data-sort="layer"   onclick="setSort('layer')">By Layer</button>
-          <button class="sort-tab"        data-sort="country" onclick="setSort('country')">By Country</button>
-          <button class="sort-tab"        data-sort="az"      onclick="setSort('az')">A – Z</button>
-        </div>
-        <button id="closeListBtn" onclick="setView('map')" title="Close list">✕</button>
-      </div>
-    </div>
-    <button id="listCloseFloat" onclick="setView('map')" title="Close list panel">✕</button>
-    <div id="listScroll">
-      <div id="listEmpty">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        No projects match your search or filters.
-      </div>
-    </div>
-  </div>
 
   <div id="detailPanel">
     <div id="panel-close" onclick="closePanel()">✕</div>
@@ -563,63 +517,54 @@ function getZoomMultiplier(zoom) {
 /* ── BASE MAP SECTION ── */
 const map = L.map('map').setView([25,78],4);
 const baseMaps = {
+  "Mapbox Light": L.tileLayer(
+    'https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+    { maxZoom:20, tileSize:512, zoomOffset:-1 }
+  ),
+  
   "Mapbox Streets": L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
-  {
-    maxZoom:20,
-    tileSize:512,
-    zoomOffset:-1
-  }
-),
+    'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+    { maxZoom:20, tileSize:512, zoomOffset:-1 }
+  ),
 
-"Mapbox Light": L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
-  {
-    maxZoom:20,
-    tileSize:512,
-    zoomOffset:-1
-  }
-),
+  "Mapbox Satellite": L.tileLayer(
+    'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
+    { maxZoom:20, tileSize:512, zoomOffset:-1 }
+  ),
 
-"Mapbox Dark": L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
-  {
-    maxZoom:20,
-    tileSize:512,
-    zoomOffset:-1
-  }
-),
-
-"Mapbox Outdoors": L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
-  {
-    maxZoom:20,
-    tileSize:512,
-    zoomOffset:-1
-  }
-),
-
-"Mapbox Satellite": L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
-  {
-    maxZoom:20,
-    tileSize:512,
-    zoomOffset:-1
-  }
-),
-
-"Mapbox Satellite Streets": L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFobW91ZGFkZWwyMDIzIiwiYSI6ImNsbDN2dDF4dzAwZzYzbnJudGdleHp6cDcifQ.lxPfWRQAhxuPfeuJ_WV6TQ',
-  {
-    maxZoom:20,
-    tileSize:512,
-    zoomOffset:-1
-  }
-),
+  "OSM": L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { maxZoom:19, attribution: '&copy; OpenStreetMap' }
+  )
 };
 baseMaps["Mapbox Light"].addTo(map); //default Base Map - Name Here
 map.zoomControl.remove();
 L.control.zoom({position:'bottomright'}).addTo(map);
+
+// Fit to Center Control
+L.Control.FitCenter = L.Control.extend({
+  onAdd: function(map) {
+    var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+    var a = L.DomUtil.create('a', '', div);
+    a.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>';
+    a.href = '#';
+    a.title = 'Fit to Center';
+    a.style.display = 'flex';
+    a.style.alignItems = 'center';
+    a.style.justifyContent = 'center';
+    a.style.color = '#333';
+    a.style.textDecoration = 'none';
+    a.style.fontSize = '14px';
+    
+    L.DomEvent.on(a, 'click', function(e) {
+      L.DomEvent.preventDefault(e);
+      map.setView([25, 78], 4);
+    });
+    return div;
+  }
+});
+new L.Control.FitCenter({ position: 'bottomright' }).addTo(map);
+
 L.control.layers(baseMaps,null,{position:'bottomright'}).addTo(map);
 L.control.scale({position:'bottomleft',metric:true,imperial:false}).addTo(map);
 
@@ -805,66 +750,86 @@ Promise.all(LAYERS.map(function(l){
 
 /* ── FILTERS ── */
 function initFilters(){
-  COUNTRY_STATES={};
-  Object.values(DATA).forEach(function(d){d.features.forEach(function(f){
-    var c=f.properties.Country,s=f.properties.State;
-    if(!c)return;
-    if(!COUNTRY_STATES[c])COUNTRY_STATES[c]=new Set();
-    if(s&&s!=='NULL')COUNTRY_STATES[c].add(s);
-  });});
-  var cf=document.getElementById('countryFilter');
-  cf.innerHTML='<option value="All">All Countries</option>';
-  Object.keys(COUNTRY_STATES).sort().forEach(function(c){cf.add(new Option(c,c));});
-  rebuildStateDropdown('All');
-}
-function rebuildStateDropdown(country){
-  var sf=document.getElementById('stateFilter');
-  sf.innerHTML='<option value="All">All States</option>';
-  var states=country==='All'
-    ?[...new Set(Object.values(COUNTRY_STATES).flatMap(function(s){return[...s];}))].sort()
-    :[...(COUNTRY_STATES[country]||[])].sort();
-  states.forEach(function(s){sf.add(new Option(s,s));});
+  // Kept empty since country/state filters are removed.
 }
 
-/* ── SIDEBAR — with cluster toggle per layer ── */
+/* ── SIDEBAR LIST ACCORDION ── */
 function buildSidebar(){
-  var container=document.getElementById('layerList');
+  renderLayerList();
+}
+
+function renderLayerList(){
+  var scroll=document.getElementById('layerList');
+  scroll.innerHTML = '';
+  var anyOpenGroup=Object.keys(groupOpenState).some(function(k){return groupOpenState[k];});
+
   LAYERS.forEach(function(l){
-    var item=document.createElement('div');
-    item.className='layer-item'; item.id='item_'+l.id;
+    var filtered = DATA[l.id].features.filter(matchesSearch);
 
-    // checked state for cluster toggle
-    var clusterChecked = l.cluster ? 'checked' : '';
+    var isOpen = groupOpenState[l.id];
+    if(isOpen === undefined) {
+      if(searchQuery && !anyOpenGroup) { groupOpenState[l.id]=true; anyOpenGroup=true; isOpen=true; }
+      else { groupOpenState[l.id]=false; isOpen=false; }
+    }
 
-    item.innerHTML=
-      '<div class="layer-main-row" onclick="toggleLayer(\''+l.id+'\')">'+
-        '<div class="layer-left">'+
-          '<div class="cb-box checked" id="'+l.id+'CB" style="--layer-color:'+l.color+'"></div>'+
-          '<div class="shape-swatch">'+swatchHTML(l,26)+'</div>'+
-          '<span class="layer-name">'+l.name+'</span>'+
-        '</div>'+
-        '<span class="layer-count" id="'+l.id+'Count">0</span>'+
-      '</div>'+
-      '<div class="layer-sub-row">'+
-        '<span class="cluster-label">Cluster</span>'+
-        '<label class="toggle-switch" onclick="event.stopPropagation()" title="Toggle clustering for this layer">'+
-          '<input type="checkbox" id="'+l.id+'Cluster" '+clusterChecked+' onchange="toggleCluster(\''+l.id+'\')">'+
-          '<span class="toggle-track"></span>'+
-          '<span class="toggle-thumb"></span>'+
-        '</label>'+
-      '</div>';
+    var groupEl = document.createElement('div');
+    groupEl.className = 'list-group';
+    groupEl.style.margin = '8px 14px';
+    groupEl.id = 'item_' + l.id;
+    if (!layerChecked[l.id]) groupEl.classList.add('unchecked');
 
-    container.appendChild(item);
+    var hdr = document.createElement('div');
+    hdr.className = 'list-group-hdr' + (isOpen ? ' open' : '');
+    var isChecked = layerChecked[l.id] ? 'checked' : '';
+    
+    hdr.innerHTML = 
+      '<div class="cb-box ' + isChecked + '" id="'+l.id+'CB" style="--layer-color:'+l.color+';"></div>' +
+      '<div class="list-group-hdr-icon">' + swatchHTML(l, 22) + '</div>' +
+      '<div class="list-group-hdr-name" style="color:#000000">' + l.name + '</div>' +
+      '<div class="list-group-hdr-count" id="'+l.id+'Count">' + (layerChecked[l.id] ? filtered.length : '—') + '</div>' +
+      '<div class="list-group-hdr-arrow">›</div>';
+
+    hdr.addEventListener('click', function(e){
+      if(e.target.closest('.cb-box')) {
+        toggleLayer(l.id);
+        return;
+      }
+      var shouldOpen = !groupOpenState[l.id];
+      Object.keys(groupOpenState).forEach(function(key){ groupOpenState[key] = false; });
+      if(shouldOpen) groupOpenState[l.id] = true;
+      renderLayerList();
+    });
+
+    var body = document.createElement('div');
+    body.className = 'list-group-body' + (isOpen ? ' open' : '');
+    
+    filtered.forEach(function(f, idx){
+      var p = f.properties;
+      var name = p.Name || p.Project_Na || 'Unnamed Project';
+      var location = [p.State, p.Country].filter(function(x){return x&&x!=='NULL';}).join(', ');
+      var desc = p.Description || p.Descriptio || '';
+      var card = document.createElement('div'); card.className = 'list-card';
+      card.innerHTML = 
+        '<div class="list-card-num">' + (idx+1) + '</div>' +
+        '<div class="list-card-body">' +
+          '<div class="list-card-name">' + highlight(name, searchQuery) + '</div>' +
+          '<div class="list-card-location">' + highlight(location, searchQuery) + '</div>' +
+          (desc ? '<div class="list-card-desc">' + highlight(desc, searchQuery) + '</div>' : '') +
+        '</div><div class="list-card-arrow">›</div>';
+      card.addEventListener('click', function(){ openPanel(f, l); });
+      body.appendChild(card);
+    });
+
+    groupEl.appendChild(hdr);
+    groupEl.appendChild(body);
+    scroll.appendChild(groupEl);
   });
 }
 
 function toggleLayer(id){
   layerChecked[id]=!layerChecked[id];
-  var box=document.getElementById(id+'CB'),item=document.getElementById('item_'+id);
-  if(layerChecked[id]){box.classList.add('checked');item.classList.remove('unchecked');}
-  else{box.classList.remove('checked');item.classList.add('unchecked');}
   updateMap();
-  if(currentView==='list') renderListView();
+  renderLayerList();
 }
 
 /* ── CLUSTER TOGGLE — flips cluster flag and redraws that layer only ── */
@@ -883,18 +848,17 @@ function toggleCluster(id){
   LAYER_OBJ[id].addTo(map);
 }
 
-/* ── SEARCH ── */
 document.getElementById('searchInput').addEventListener('input',function(){
   searchQuery=this.value.trim().toLowerCase();
   document.getElementById('searchClear').classList.toggle('visible', !!searchQuery);
   updateMap();
-  if(currentView==='list') renderListView();
+  renderLayerList();
 });
 function clearSearch(){
   document.getElementById('searchInput').value='';searchQuery='';
   document.getElementById('searchClear').classList.remove('visible');
-  document.getElementById('searchCount').textContent='';
-  updateMap();if(currentView==='list')renderListView();
+  updateMap();
+  renderLayerList();
 }
 function matchesSearch(f){
   if(!searchQuery)return true;
@@ -903,37 +867,8 @@ function matchesSearch(f){
 }
 
 /* ── FILTER HELPERS ── */
-function filterFeatures(data,country,state){
-  return data.features.filter(function(f){
-    return(country==='All'||f.properties.Country===country)&&(state==='All'||f.properties.State===state);
-  });
-}
-function getVisible(layerId,country,state){
-  return filterFeatures(DATA[layerId],country,state).filter(matchesSearch);
-}
-
-/* ── VIEW SWITCH ── */
-function setView(mode){
-  currentView=mode;
-  document.getElementById('listView').classList.toggle('active', mode==='list');
-  document.getElementById('map').classList.toggle('with-list', mode==='list');
-  document.getElementById('btnMapView').classList.toggle('active', mode==='map');
-  document.getElementById('btnListView').classList.toggle('active',mode==='list');
-  if(mode==='list'){
-    if(window.innerWidth <= 900){
-      closeSidebar();
-    }
-    renderListView();
-  }
-  setTimeout(function(){map.invalidateSize();},50);
-}
-
-/* ── SORT ── */
-function setSort(sort){
-  currentSort=sort;
-  document.querySelectorAll('.sort-tab').forEach(function(t){t.classList.toggle('active',t.dataset.sort===sort);});
-  groupOpenState={};
-  renderListView();
+function getVisible(layerId){
+  return DATA[layerId].features.filter(matchesSearch);
 }
 
 /* ── HIGHLIGHT ── */
@@ -993,46 +928,34 @@ function addMarkerInteraction(marker,feature,layer){
    so icon sizes update live as user zooms
    ===================================================================== */
 map.on('zoomend', function(){
-  var country=document.getElementById('countryFilter').value;
-  var state=document.getElementById('stateFilter').value;
-
   LAYERS.forEach(function(l){
     if(!layerChecked[l.id])return;
     if(LAYER_OBJ[l.id]){map.removeLayer(LAYER_OBJ[l.id]);LAYER_OBJ[l.id]=null;}
-    var filtered=getVisible(l.id,country,state);
+    var filtered=getVisible(l.id);
     if(!filtered.length)return;
     LAYER_OBJ[l.id]=buildLayerGroup(l,filtered);
     LAYER_OBJ[l.id].addTo(map);
   });
 
   updateZoomBadge();
-  // zoom auto-reset filter
-  if(map.getZoom()<=RESET_ZOOM){
-    var cf=document.getElementById('countryFilter'),sf=document.getElementById('stateFilter');
-    if(cf.value!=='All'||sf.value!=='All'){
-      cf.value='All';sf.value='All';rebuildStateDropdown('All');
-      var badge=document.getElementById('zoomResetBadge');
-      badge.style.display='block';
-      setTimeout(function(){badge.style.display='none';},2500);
-      updateMap();
-      if(currentView==='list')renderListView();
-    }
-  }
 });
 
 /* ── MAIN MAP UPDATE ── */
 function updateMap(){
-  var country=document.getElementById('countryFilter').value;
-  var state=document.getElementById('stateFilter').value;
   var total=0,bounds=null;
   var vc=new Set(),vs=new Set();
 
   LAYERS.forEach(function(l){
     if(LAYER_OBJ[l.id]){map.removeLayer(LAYER_OBJ[l.id]);LAYER_OBJ[l.id]=null;}
-    if(!layerChecked[l.id]){document.getElementById(l.id+'Count').innerText='—';return;}
+    if(!layerChecked[l.id]){
+      var countEl = document.getElementById(l.id+'Count');
+      if (countEl) countEl.innerText='—';
+      return;
+    }
 
-    var filtered=getVisible(l.id,country,state);
-    document.getElementById(l.id+'Count').innerText=filtered.length;
+    var filtered=getVisible(l.id);
+    var countEl = document.getElementById(l.id+'Count');
+    if (countEl) countEl.innerText=filtered.length;
     total+=filtered.length;
     filtered.forEach(function(f){
       if(f.properties.Country)vc.add(f.properties.Country);
@@ -1051,99 +974,9 @@ function updateMap(){
   document.getElementById('totalCount').innerText   =total;
   document.getElementById('statCountries').innerText=vc.size;
   document.getElementById('statStates').innerText   =vs.size;
-  document.getElementById('searchCount').textContent=searchQuery?(total+' result'+(total!==1?'s':'')+' found'):'';
 
-  if(bounds&&bounds.isValid()&&(country!=='All'||state!=='All'||searchQuery))
+  if(bounds&&bounds.isValid()&&searchQuery)
     map.fitBounds(bounds,{padding:[60,60],maxZoom:12});
-}
-
-/* ── LIST VIEW ── */
-function renderListView(){
-  var country=document.getElementById('countryFilter').value;
-  var state=document.getElementById('stateFilter').value;
-  var scroll=document.getElementById('listScroll');
-  var empty=document.getElementById('listEmpty');
-  var allItems=[];
-  LAYERS.forEach(function(l){
-    if(!layerChecked[l.id])return;
-    getVisible(l.id,country,state).forEach(function(f){allItems.push({feature:f,layer:l});});
-  });
-  document.getElementById('listCountLabel').textContent=allItems.length;
-  if(!allItems.length){
-    Array.from(scroll.children).forEach(function(c){if(c.id!=='listEmpty')c.remove();});
-    empty.style.display='flex';return;
-  }
-  empty.style.display='none';
-  var groups=[];
-  if(currentSort==='layer'){
-    LAYERS.forEach(function(l){
-      if(!layerChecked[l.id])return;
-      var items=allItems.filter(function(i){return i.layer.id===l.id;});
-      if(!items.length)return;
-      groups.push({id:'layer_'+l.id,label:l.name,color:l.color,iconHTML:swatchHTML(l,22),items:items});
-    });
-  } else if(currentSort==='country'){
-    var byCountry={};
-    allItems.forEach(function(item){
-      var c=item.feature.properties.Country||'Unknown';
-      if(!byCountry[c])byCountry[c]=[];
-      byCountry[c].push(item);
-    });
-    Object.keys(byCountry).sort().forEach(function(c){
-      groups.push({id:'country_'+c,label:c,color:'#94a3b8',iconHTML:'🌐',items:byCountry[c]});
-    });
-  } else {
-    allItems.sort(function(a,b){
-      return(a.feature.properties.Name||a.feature.properties.Project_Na||'').localeCompare(b.feature.properties.Name||b.feature.properties.Project_Na||'');
-    });
-    groups.push({id:'az_all',label:'All Projects — A to Z',color:'#64748b',iconHTML:'',items:allItems});
-  }
-  Array.from(scroll.children).forEach(function(c){if(c.id!=='listEmpty')c.remove();});
-  var anyOpenGroup=Object.keys(groupOpenState).some(function(k){return groupOpenState[k];});
-  groups.forEach(function(group){
-    if(groupOpenState[group.id]===undefined){
-      if(searchQuery && !anyOpenGroup){
-        groupOpenState[group.id]=true;
-        anyOpenGroup=true;
-      } else {
-        groupOpenState[group.id]=false;
-      }
-    }
-    var isOpen=groupOpenState[group.id];
-    var groupEl=document.createElement('div'); groupEl.className='list-group';
-    var hdr=document.createElement('div');
-    hdr.className='list-group-hdr'+(isOpen?' open':'');
-    hdr.innerHTML=(group.iconHTML?'<div class="list-group-hdr-icon">'+group.iconHTML+'</div>':'')+
-      '<div class="list-group-hdr-name" style="color:#000000">'+group.label+'</div>'+
-      '<div class="list-group-hdr-count">'+group.items.length+'</div>'+
-      '<div class="list-group-hdr-arrow">›</div>';
-    var body=document.createElement('div');
-    body.className='list-group-body'+(isOpen?' open':'');
-    hdr.addEventListener('click',function(){
-      var shouldOpen=!groupOpenState[group.id];
-      Object.keys(groupOpenState).forEach(function(key){groupOpenState[key]=false;});
-      if(shouldOpen) groupOpenState[group.id]=true;
-      renderListView();
-    });
-    group.items.forEach(function(item,idx){
-      var p=item.feature.properties;
-      var name=p.Name||p.Project_Na||'Unnamed Project';
-      var location=[p.State,p.Country].filter(function(x){return x&&x!=='NULL';}).join(', ');
-      var desc=p.Description||p.Descriptio||'';
-      var fIdx=DATA[item.layer.id].features.indexOf(item.feature);
-      var card=document.createElement('div'); card.className='list-card';
-      card.innerHTML='<div class="list-card-num">'+(idx+1)+'</div>'+
-        '<div class="list-card-body">'+
-          '<div class="list-card-name">'+highlight(name,searchQuery)+'</div>'+
-          '<div class="list-card-location">'+highlight(location,searchQuery)+'</div>'+
-          (desc?'<div class="list-card-desc">'+highlight(desc,searchQuery)+'</div>':'')+
-        '</div><div class="list-card-arrow">›</div>';
-      card.addEventListener('click',function(){openPanel(DATA[item.layer.id].features[fIdx],item.layer);});
-      body.appendChild(card);
-    });
-    groupEl.appendChild(hdr); groupEl.appendChild(body);
-    scroll.insertBefore(groupEl,empty);
-  });
 }
 
 /* ── EVENTS ── */
@@ -1159,6 +992,11 @@ function closeSidebar(){
   sidebar.classList.remove('open');
   menuBtn.classList.remove('hidden');
 }
+map.on('click', function() {
+  if(window.innerWidth <= 900 || document.getElementById('sidebar').classList.contains('open')) {
+    closeSidebar();
+  }
+});
 function updateSidebarMode(){
   var sidebar=document.getElementById('sidebar');
   var menuBtn=document.getElementById('floatingMenuBtn');
@@ -1177,20 +1015,6 @@ window.addEventListener('resize', function(){
   updateSidebarMode();
   setTimeout(function(){map.invalidateSize();},50);
 });
-document.getElementById('countryFilter').onchange=function(){rebuildStateDropdown(this.value);document.getElementById('stateFilter').value='All';updateMap();if(currentView==='list')renderListView();};
-document.getElementById('stateFilter').onchange=function(){updateMap();if(currentView==='list')renderListView();};
-document.getElementById('resetBtn').onclick=function(){
-  document.getElementById('countryFilter').value='All';
-  document.getElementById('stateFilter').value='All';
-  rebuildStateDropdown('All');clearSearch();
-  LAYERS.forEach(function(l){
-    layerChecked[l.id]=true;
-    document.getElementById(l.id+'CB').classList.add('checked');
-    document.getElementById('item_'+l.id).classList.remove('unchecked');
-  });
-  groupOpenState={};closePanel();updateMap();map.setView([20,78],4);
-  if(currentView==='list')renderListView();
-};
 </script>
 </body>
 </html>
